@@ -9,6 +9,37 @@ class ContactHelper:
         # init contact creation
         wd.find_element_by_link_text("add new").click()
         # fill contact form
+        self.fill_form(contact)
+        # submit contact creation
+        wd.find_element_by_xpath("//div[@id='content']/form/input[21]").click()
+
+    def change_first(self, contact):
+        wd = self.app.wd
+        # go to home page
+        wd.find_element_by_link_text("home").click()
+        # select first contact
+        wd.find_element_by_name("selected[]").click()
+        # submit change
+        wd.find_element_by_xpath("//table[@id='maintable']/tbody/tr[2]/td[8]/a/img").click()
+        # fill contact form
+        self.fill_form(contact)
+        # submit contact change
+        wd.find_element_by_name("update").click()
+
+    def delete_first(self):
+        wd = self.app.wd
+        # go to home page
+        wd.find_element_by_link_text("home").click()
+        # select first contact
+        wd.find_element_by_name("selected[]").click()
+        # submit deletion
+        wd.find_element_by_xpath("//div[@id='content']/form[2]/div[2]/input").click()
+        wd.switch_to_alert().accept()
+        wd.find_element_by_link_text("home").click()
+
+    def fill_form(self, contact):
+        wd = self.app.wd
+        # fill contact form
         wd.find_element_by_name("firstname").click()
         wd.find_element_by_name("firstname").clear()
         wd.find_element_by_name("firstname").send_keys(contact.name)
@@ -30,7 +61,7 @@ class ContactHelper:
         wd.find_element_by_name("address").click()
         wd.find_element_by_name("address").clear()
         wd.find_element_by_name("address").send_keys(contact.address)
-        wd.find_element_by_name("theform").click()
+        wd.find_element_by_name("home").click()
         wd.find_element_by_name("home").click()
         wd.find_element_by_name("home").clear()
         wd.find_element_by_name("home").send_keys(contact.home_telephone)
@@ -56,5 +87,3 @@ class ContactHelper:
         wd.find_element_by_name("phone2").click()
         wd.find_element_by_name("phone2").clear()
         wd.find_element_by_name("phone2").send_keys(contact.phone2)
-        # submit contact creation
-        wd.find_element_by_xpath("//div[@id='content']/form/input[21]").click()
