@@ -16,7 +16,7 @@ class ContactHelper:
     def change_first(self, new_contact_data):
         wd = self.app.wd
         # go to home page
-        wd.find_element_by_link_text("home").click()
+        self.go_to_homepage()
         # select first contact
         wd.find_element_by_name("selected[]").click()
         # submit change
@@ -28,13 +28,17 @@ class ContactHelper:
 
     def delete_first(self):
         wd = self.app.wd
-        # go to home page
-        wd.find_element_by_link_text("home").click()
+        self.go_to_homepage()
         # select first contact
         wd.find_element_by_name("selected[]").click()
         # submit deletion
         wd.find_element_by_xpath("//div[@id='content']/form[2]/div[2]/input").click()
         wd.switch_to_alert().accept()
+        self.go_to_homepage()
+
+    def go_to_homepage(self):
+        wd = self.app.wd
+        # go to home page
         wd.find_element_by_link_text("home").click()
 
     def fill_form(self, contact):
@@ -65,3 +69,8 @@ class ContactHelper:
             wd.find_element_by_name(field_name).click()
             wd.find_element_by_name(field_name).clear()
             wd.find_element_by_name(field_name).send_keys(text)
+
+    def count(self):
+        wd = self.app.wd
+        self.go_to_homepage()
+        return len(wd.find_elements_by_name("selected[]"))
