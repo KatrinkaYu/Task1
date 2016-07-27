@@ -6,16 +6,19 @@ class ContactHelper:
 
     def create(self, contact):
         wd = self.app.wd
-        # init contact creation
-        wd.find_element_by_link_text("add new").click()
+        self.go_to_page_add_new()
         # fill contact form
         self.fill_form(contact)
         # submit contact creation
         wd.find_element_by_xpath("//div[@id='content']/form/input[21]").click()
 
+    def go_to_page_add_new(self):
+        wd = self.app.wd
+        if not (wd.current_url.endswith("/edit.php") and len(wd.find_elements_by_name("submit")) > 0):
+            wd.find_element_by_link_text("add new").click()
+
     def change_first(self, new_contact_data):
         wd = self.app.wd
-        # go to home page
         self.go_to_homepage()
         # select first contact
         wd.find_element_by_name("selected[]").click()
@@ -39,7 +42,8 @@ class ContactHelper:
     def go_to_homepage(self):
         wd = self.app.wd
         # go to home page
-        wd.find_element_by_link_text("home").click()
+        if not (wd.current_url.endswith("/addressbook/") and len(wd.find_elements_by_name("add")) > 0):
+            wd.find_element_by_link_text("home").click()
 
     def fill_form(self, contact):
         wd = self.app.wd
