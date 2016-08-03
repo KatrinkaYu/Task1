@@ -8,7 +8,15 @@ def test_change_first_contact_names(app):
                                    nickname="nickname", title="title", company="company", address="address",
                                    home_telephone="123456", mobile_telephone="234567", work_telephone="345678",
                                    email="mail@qwerty.com", year="2000", address2="address", phone2="12"))
-    app.contact.change_first(Contact(name="change_new_contact", middle_name="change_contact_middle_name", last_name="change_contact_last_name"))
+
+    old_contacts = app.contact.get_contact_list()
+    contact = Contact(name="change_new_contact", middle_name="change_contact_middle_name", last_name="change_contact_last_name")
+    contact.id = old_contacts[0].id
+    app.contact.change_first(contact)
+    new_contacts = app.contact.get_contact_list()
+    assert len(old_contacts) == len(new_contacts)
+    old_contacts[0] = contact
+    assert sorted(old_contacts, key=Contact.id_or_max) == sorted(new_contacts, key=Contact.id_or_max)
 
 def test_change_first_contact_phones(app):
     if app.contact.count() == 0:
@@ -16,4 +24,14 @@ def test_change_first_contact_phones(app):
                                    nickname="nickname", title="title", company="company", address="address",
                                    home_telephone="123456", mobile_telephone="234567", work_telephone="345678",
                                    email="mail@qwerty.com", year="2000", address2="address", phone2="12"))
-    app.contact.change_first(Contact(home_telephone="923456", mobile_telephone="934567", work_telephone="945678"))
+
+    old_contacts = app.contact.get_contact_list()
+    contact = Contact(home_telephone="923456", mobile_telephone="934567", work_telephone="945678")
+    contact.id = old_contacts[0].id
+    contact.last_name = old_contacts[0].last_name
+    contact.name = old_contacts[0].name
+    app.contact.change_first(contact)
+    new_contacts = app.contact.get_contact_list()
+    assert len(old_contacts) == len(new_contacts)
+    old_contacts[0] = contact
+    assert sorted(old_contacts, key=Contact.id_or_max) == sorted(new_contacts, key=Contact.id_or_max)
