@@ -21,28 +21,38 @@ class ContactHelper:
             wd.find_element_by_link_text("add new").click()
 
     def change_first(self, new_contact_data):
+        self.change_by_index(0, new_contact_data)
+
+    def change_by_index(self, index, new_contact_data):
         wd = self.app.wd
         self.go_to_homepage()
-        # select first contact
-        wd.find_element_by_name("selected[]").click()
         # submit change
-        wd.find_element_by_xpath("//table[@id='maintable']/tbody/tr[2]/td[8]/a/img").click()
+        text = "//table[@id='maintable']/tbody/tr["+str(2+index)+"]/td[8]/a/img"
+        wd.find_element_by_xpath(text).click()
         # fill contact form
         self.fill_form(new_contact_data)
         # submit contact change
         wd.find_element_by_name("update").click()
+        self.go_to_homepage()
         self.contact_cache = None
 
     def delete_first(self):
+        self.delete_by_index(0)
+
+    def delete_by_index(self, index):
         wd = self.app.wd
         self.go_to_homepage()
-        # select first contact
-        wd.find_element_by_name("selected[]").click()
+        self.select_contact_by_index(index)
         # submit deletion
         wd.find_element_by_xpath("//div[@id='content']/form[2]/div[2]/input").click()
         wd.switch_to_alert().accept()
         self.go_to_homepage()
         self.contact_cache = None
+
+    def select_contact_by_index(self, index):
+        wd = self.app.wd
+        # select first group
+        wd.find_elements_by_name("selected[]")[index].click()
 
     def go_to_homepage(self):
         wd = self.app.wd
