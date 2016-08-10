@@ -32,3 +32,6 @@ class Contact:
             return int(self.id)
         else:
             return maxsize
+
+    def __repr__(self):
+        return "%s:%s;%s;%s" % (self.id, self.name, self.middle_name, self.last_name)

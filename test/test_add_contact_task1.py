@@ -1,13 +1,31 @@
 # -*- coding: utf-8 -*-
 from model.contact import Contact
+import pytest
+import random
+import string
 
+def random_string(prefix, maxlen):
+    symbols = string.ascii_letters + string.digits + " "*10
+    return prefix + "".join([random.choice(symbols) for i in range(random.randrange(maxlen))])
+def random_email(maxlen):
+    symbols = string.ascii_letters + string.digits
+    return "".join([random.choice(symbols) for i in range(random.randrange(maxlen))]) + "@qwerty.com"
+def random_numbers(maxlen):
+    symbols = string.digits
+    return "".join([random.choice(symbols) for i in range(random.randrange(maxlen))])
 
-def test_add_contact_task1(app):
+testdata = [Contact(name=random_string("name", 15), middle_name=random_string("middle_name", 15),
+                    last_name=random_string("last_name", 15),nickname=random_string("nickname", 15),
+                    title=random_string("title", 15), company=random_string("company", 15),
+                    address=random_string("address", 15), home_telephone=random_numbers(10),
+                    mobile_telephone=random_numbers(10), work_telephone=random_numbers(10), email=random_email(10),
+                    email2=random_email(10), email3=random_email(10), year=random_numbers(4),
+                    address2=random_string("address2", 15), phone2=random_numbers(10)) for i in range(5)]
+
+@pytest.mark.parametrize("contact", testdata, ids=[repr(x) for x in testdata])
+
+def test_add_contact_task1(app, contact):
     old_contacts = app.contact.get_contact_list()
-    contact = Contact(name="new_contact", middle_name="contact_middle_name", last_name="contact_last_name",
-                               nickname="contact_nickname", title="contact_title", company="contact_company",
-                               address="contact_address", home_telephone="123456", mobile_telephone="234567",
-                               work_telephone="345678", email="mail@qwerty.com", year="2000", address2="address", phone2="12")
     app.contact.create(contact)
     assert len(old_contacts) + 1 == app.contact.count()
     new_contacts = app.contact.get_contact_list()
@@ -15,16 +33,4 @@ def test_add_contact_task1(app):
     assert sorted(old_contacts, key=Contact.id_or_max) == sorted(new_contacts, key=Contact.id_or_max)
 
 
-def test_add_contact(app):
-    old_contacts = app.contact.get_contact_list()
-    contact = Contact(name="new_contact_1", middle_name="contact_middle_name_1", last_name="contact_last_name_1",
-                               nickname="contact_nickname_1", title="contact_title_1", company="contact_company_1",
-                               address="contact_address_1", home_telephone="1234567", mobile_telephone="2345678",
-                               work_telephone="3456789", email="mail_1@qwerty.com", year="2001", address2="address_1",
-                               phone2="123")
-    app.contact.create(contact)
-    assert len(old_contacts) + 1 == app.contact.count()
-    new_contacts = app.contact.get_contact_list()
-    old_contacts.append(contact)
-    assert sorted(old_contacts, key=Contact.id_or_max) == sorted(new_contacts, key=Contact.id_or_max)
 
