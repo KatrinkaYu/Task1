@@ -3,7 +3,7 @@ from  sys import maxsize
 class Contact:
     def __init__(self, name=None, middle_name=None, last_name=None, nickname=None, title=None, company=None, address=None,
                  home_telephone=None, mobile_telephone=None, work_telephone=None, email=None, email2=None, email3=None, year=None, address2=None,
-                 phone2=None, all_phones_from_homepage=None, all_emails_from_homepage=None, id=None):
+                 phone2=None, all_phones_from_homepage=None, all_emails_from_homepage=None, id=None, modified=None):
         self.name = name
         self.middle_name = middle_name
         self.last_name = last_name
@@ -23,6 +23,7 @@ class Contact:
         self.all_phones_from_homepage = all_phones_from_homepage
         self.all_emails_from_homepage = all_emails_from_homepage
         self.id = id
+        self.modified = modified
 
     def __eq__(self, other):
         return (self.id is None or other.id is None or self.id == other.id) and self.name == other.name and self.last_name == other.last_name

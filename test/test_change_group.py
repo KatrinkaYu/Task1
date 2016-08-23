@@ -1,30 +1,37 @@
 # -*- coding: utf-8 -*-
 from model.group import Group
-from random import randrange
+import random
 
-def test_change_some_group_name(app):
-    if app.group.count() == 0:
+
+def test_change_some_group_name(app, db, check_ui):
+    if len(db.get_group_list()) == 0:
         app.group.create(Group(name="group", header="new", footer="new_1"))
-    old_groups = app.group.get_group_list()
-    index = randrange(len(old_groups))
+    old_groups = db.get_group_list()
+    old_group = random.choice(old_groups)
+    id = old_group.id
     group = Group(name="change_group")
-    group.id = old_groups[index].id
-    app.group.change_by_index(index, group)
-    assert len(old_groups) == app.group.count()
-    new_groups = app.group.get_group_list()
-    old_groups[index] = group
+    app.group.change_by_id(id, group)
+    new_groups = db.get_group_list()
+    group.id = id
+    old_groups.insert(old_groups.index(old_group), group)
+    old_groups.remove(old_group)
     assert sorted(old_groups, key=Group.id_or_max) == sorted(new_groups, key=Group.id_or_max)
+    if check_ui:
+        assert sorted(new_groups, key=Group.id_or_max) == sorted(app.group.get_group_list(), key=Group.id_or_max)
 
-def test_change_some_group_header(app):
-    if app.group.count() == 0:
+def test_change_some_group_header(app, db, check_ui):
+    if len(db.get_group_list()) == 0:
         app.group.create(Group(name="group", header="new", footer="new_1"))
-    old_groups = app.group.get_group_list()
-    index = randrange(len(old_groups))
+    old_groups = db.get_group_list()
+    old_group = random.choice(old_groups)
+    id = old_group.id
     group = Group(header="change_new_group")
-    group.id = old_groups[index].id
-    group.name = old_groups[index].name
-    app.group.change_by_index(index, group)
-    assert len(old_groups) == app.group.count()
-    new_groups = app.group.get_group_list()
-    old_groups[index] = group
+    app.group.change_by_id(id, group)
+    group.id =id
+    group.name = old_group.name
+    new_groups = db.get_group_list()
+    old_groups.insert(old_groups.index(old_group), group)
+    old_groups.remove(old_group)
     assert sorted(old_groups, key=Group.id_or_max) == sorted(new_groups, key=Group.id_or_max)
+    if check_ui:
+        assert sorted(new_groups, key=Group.id_or_max) == sorted(app.group.get_group_list(), key=Group.id_or_max)

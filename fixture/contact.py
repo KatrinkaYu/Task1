@@ -24,6 +24,19 @@ class ContactHelper:
     def change_first(self, new_contact_data):
         self.change_by_index(0, new_contact_data)
 
+    def change_by_id(self, id, new_contact_data):
+        wd = self.app.wd
+        self.go_to_homepage()
+        text = "http://localhost/addressbook/edit.php?id=%s" % id
+        #go to edit page by id
+        wd.get(text)
+        # fill contact form
+        self.fill_form(new_contact_data)
+        # submit contact change
+        wd.find_element_by_name("update").click()
+        self.go_to_homepage()
+        self.contact_cache = None
+
     def change_by_index(self, index, new_contact_data):
         wd = self.app.wd
         self.go_to_homepage()
@@ -40,6 +53,17 @@ class ContactHelper:
     def delete_first(self):
         self.delete_by_index(0)
 
+    def delete_by_id(self, id):
+        wd = self.app.wd
+        self.go_to_homepage()
+        # select group by index
+        self.select_contact_by_id(id)
+        # submit deletion
+        wd.find_element_by_xpath("//div[@id='content']/form[2]/div[2]/input").click()
+        wd.switch_to_alert().accept()
+        self.go_to_homepage()
+        self.contact_cache = None
+
     def delete_by_index(self, index):
         wd = self.app.wd
         self.go_to_homepage()
@@ -50,9 +74,15 @@ class ContactHelper:
         self.go_to_homepage()
         self.contact_cache = None
 
+    def select_contact_by_id(self, id):
+        wd = self.app.wd
+        # select contact by id
+        wd.find_element_by_css_selector("input[value='%s']" % id).click()
+        #wd.find_element_by_name("selected[][value='%s']" % id).click()
+
     def select_contact_by_index(self, index):
         wd = self.app.wd
-        # select first group
+        # select contact by index
         wd.find_elements_by_name("selected[]")[index].click()
 
     def go_to_homepage(self):
