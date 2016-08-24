@@ -27,14 +27,13 @@ class DbFixture:
         list = []
         cursor = self.connection.cursor()
         try:
-            cursor.execute("select id, firstname, middlename, lastname, nickname, company, title, address, home, mobile, work, email, email2, email3, byear, address2, phone2, created, modified, deprecated from addressbook")
+            cursor.execute("select id, firstname, middlename, lastname, nickname, company, title, address, home, mobile, work, email, email2, email3, byear, address2, phone2 from addressbook where deprecated='0000-00-00 00:00:00'")
             for row in cursor:
-                (id, firstname, middlename, lastname, nickname, company, title, address, home, mobile, work, email, email2, email3, byear, address2, phone2, created, modified, deprecated) = row
-                if not deprecated:
-                    list.append(Contact(id=str(id), name=firstname, middle_name=middlename,last_name=lastname,nickname=nickname,
-                                    title=title, company=company, address=address, home_telephone=home,mobile_telephone=mobile,
-                                    work_telephone=work, email=email, email2=email2, email3=email3, year=byear,
-                                    address2=address2, phone2=phone2, modified=modified))
+                (id, firstname, middlename, lastname, nickname, company, title, address, home, mobile, work, email, email2, email3, byear, address2, phone2) = row
+                list.append(Contact(id=str(id), name=firstname, middle_name=middlename,last_name=lastname,nickname=nickname,
+                                title=title, company=company, address=address, home_telephone=home,mobile_telephone=mobile,
+                                work_telephone=work, email=email, email2=email2, email3=email3, year=byear,
+                                address2=address2, phone2=phone2))
         finally:
             cursor.close()
         return list
