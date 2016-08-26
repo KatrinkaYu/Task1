@@ -56,7 +56,7 @@ class ContactHelper:
     def delete_by_id(self, id):
         wd = self.app.wd
         self.go_to_homepage()
-        # select group by index
+        # select contact by id
         self.select_contact_by_id(id)
         # submit deletion
         wd.find_element_by_xpath("//div[@id='content']/form[2]/div[2]/input").click()
@@ -187,4 +187,21 @@ class ContactHelper:
         row = wd.find_elements_by_name("entry")[index]
         cell = row.find_elements_by_tag_name("td")[6]
         cell.find_element_by_tag_name("a").click()
+
+    def add_contact_in_group(self, contact, group):
+        wd = self.app.wd
+        self.go_to_homepage()
+        wd.find_element_by_xpath("//form[@id='right']//option[@value='']").click()
+        self.select_contact_by_id(contact.id)
+        wd.find_element_by_xpath("//div[@class='right']//option[@value='%s']"% group.id).click()
+        wd.find_element_by_name("add").click()
+        self.go_to_homepage()
+
+    def delete_contact_from_group(self, contact, group):
+        wd = self.app.wd
+        self.go_to_homepage()
+        wd.find_element_by_xpath("//form[@id='right']//option[@value='%s']"% group.id).click()
+        self.select_contact_by_id(contact.id)
+        wd.find_element_by_name("remove").click()
+        self.go_to_homepage()
 
